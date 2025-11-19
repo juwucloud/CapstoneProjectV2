@@ -5,6 +5,6 @@
 
 resource "aws_key_pair" "wp_key" {
   key_name   = "wp_key"
-  public_key = file("${path.module}/keys/wp_key.pub")
+  public_key = file("${path.module}/keys/lvl3keypair.pub")
 }
 
