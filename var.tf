@@ -36,7 +36,7 @@ variable "webserver_ami" {
 variable "wordpress_ami_id" {
     type = string
     description = "AMI for WordPress"
-    default = ami-0bd84fb21f977f20a
+    default = "ami-0bd84fb21f977f20a"
   
 }
 

@@ -4,10 +4,10 @@ resource "aws_launch_template" "launch_template" {
   instance_type = var.instance_type
 
   vpc_security_group_ids = [
-    aws_security_group.http.id
-  ]
+    aws_security_group.http_sg.id]
 
   key_name = aws_key_pair.lvl3keypair.key_name
+
 
   user_data = base64encode(<<EOF
 #!/bin/bash
@@ -15,8 +15,8 @@ resource "aws_launch_template" "launch_template" {
 # Write database environment variables for WordPress
 echo "WP_DB_NAME=${var.db_name}" >> /etc/environment
 echo "WP_DB_USER=${var.db_user}" >> /etc/environment
-echo "WP_DB_PASSWORD=${var.db_password}" >> /etc/environment
-echo "WP_DB_HOST=${aws_db_instance.wordpress_db.address}" >> /etc/environment
+echo "WP_DB_PASSWORD=${var.dbuser_password}" >> /etc/environment
+echo "WP_DB_HOST=${aws_db_instance.wordpressdb.address}" >> /etc/environment
 
 # Reload them
 source /etc/environment
