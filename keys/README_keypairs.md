@@ -7,9 +7,9 @@ Steps to generate and use keys (run on your local machine):
 1. Generate the keypair locally (this will create `wp_key` and `wp_key.pub`):
 
 ```bash
-ssh-keygen -t rsa -b 4096 -f ~/Downloads/wp_key -N ""
+ssh-keygen -t rsa -b 4096 -f ~/Downloads/lvl3keypair -N ""
 mkdir -p keys
-mv ~/Downloads/wp_key.pub keys/wp_key.pub
+mv ~/Downloads/lvl3keypair.pub ./keys/lvl3keypair.pub
 ```
 
 2. Commit only the public key to the repo:
