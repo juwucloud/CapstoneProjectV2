@@ -1,5 +1,5 @@
 resource "aws_instance" "bastionhost" {
-  ami                    = var.bastionhost_ami    #latest ami linux 2023
+  ami                    = data.aws_ssm_parameter.al2023_latest.value    #latest ami linux 2023
   instance_type          = var.aws_instance_type_t3micro
   subnet_id              = aws_subnet.public_subnet_1.id
   vpc_security_group_ids = [aws_security_group.ssh_sg.id]

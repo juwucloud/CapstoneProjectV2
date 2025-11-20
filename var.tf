@@ -27,11 +27,6 @@ data "aws_ssm_parameter" "al2023_latest" {
   name = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"
 }
 
-variable "bastionhost_ami" {
-  type        = string
-  description = "AMI for Webserver"
-  default     = null
-}
 
 variable "wordpress_ami_id" {
     type = string
