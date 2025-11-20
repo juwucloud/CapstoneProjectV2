@@ -1,3 +1,4 @@
+#####################################################################
 # SSH - Security Group
 resource "aws_security_group" "ssh_sg" {
   name        = "ssh_sg"
@@ -25,35 +26,69 @@ resource "aws_security_group" "ssh_sg" {
   }
 }
 
+#####################################################################
 
+# Webserver Security Group
+# Accepts http traffic only from the ALB-security-group
+resource "aws_security_group" "webserver_sg" {
+  name        = "webserver_sg"
+  description = "Allows inbound HTTP traffic from the ALB only."
+  vpc_id      = aws_vpc.capstone_vpc.id
+
+  ingress {
+    description     = "Inbound HTTP from the ALB security group."
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_sg.id]
+  }
+
+  egress {
+    description = "Allow all outbound traffic for updates, RDS access, etc."
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "webserver_sg"
+  }
+}
+
+
+#####################################################################
 
 
 # MYSQL - Security Group
 resource "aws_security_group" "mysql_sg" {
-  name        = "MySQL Security Group"
+  name        = "mysql_sg"
+  description = "Allows MySQL access only from the webserver security group."
   vpc_id      = aws_vpc.capstone_vpc.id
-  description = "Allow MySQL access to EC2 instances from security http securit group"
-  tags = {
-    name = "mysql_security_group"
+
+  ingress {
+    description              = "Allows inbound MySQL traffic from the webserver security group."
+    from_port                = 3306
+    to_port                  = 3306
+    protocol                 = "tcp"
+    security_groups          = [aws_security_group.http_sg.id]
   }
-} 
 
-resource "aws_security_group_rule" "mysql_sg_inbound_rule" {
-  type                     = "ingress"
-  security_group_id        = aws_security_group.mysql_sg.id
-  source_security_group_id = aws_security_group.http_sg.id
-  from_port                = 3306
-  to_port                  = 3306
-  protocol                 = "tcp"
-  description              = "Allow MySQL access to EC2 instances from security http securit group"
+  egress {
+    description = "Allows all outbound traffic to any IPv4 address."
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "mysql_sg"
+  }
 }
-resource "aws_vpc_security_group_egress_rule" "mysql_sg_outbound_rule" {
-  security_group_id = aws_security_group.mysql_sg.id
-  
-  cidr_ipv4         = "0.0.0.0/0"
-  ip_protocol       = "-1" # means "to all ports"
-} 
 
+
+#####################################################################
 
 # Application Load Balancer - Security Group
 resource "aws_security_group" "alb_sg" {
