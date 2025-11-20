@@ -27,7 +27,7 @@ data "aws_ssm_parameter" "al2023_latest" {
   name = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"
 }
 
-variable "webserver_ami" {
+variable "bastionhost_ami" {
   type        = string
   description = "AMI for Webserver"
   default     = null
@@ -47,14 +47,6 @@ variable "instance_type" {
   
 }
 
-## Subnet IDs for RDS instance
-variable "private_subnet_ids" {
-  description = "List of subnet IDs for the RDS instance"
-  type        = list(string)
-  default = ["aws_subnet.private_subnet_1.id", "aws_subnet.private_subnet_2.id"]
-
-
-}
 
 
 
