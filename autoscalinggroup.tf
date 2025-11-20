@@ -1,6 +1,5 @@
 resource "aws_autoscaling_group" "asg-capstone-jw1" {
   depends_on = [ aws_db_instance.wordpressdb ]
-  default_cooldown = 300
 
   launch_template {
     id      = aws_launch_template.launch_template.id
@@ -22,13 +21,9 @@ resource "aws_autoscaling_group" "asg-capstone-jw1" {
   health_check_type = "ELB"
   health_check_grace_period = 720  # 12 minutes - estimated time for rds to set up
 
-  # Enable force deletion of instances
-  force_delete = true
-
-
   tag {
     key                 = "Name"
-    value               = "asg"
+    value               = "asg-capstone-jw1"
     propagate_at_launch = true
   }
 }
