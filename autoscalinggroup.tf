@@ -25,8 +25,5 @@ resource "aws_autoscaling_group" "asg-capstone-jw1" {
     key                 = "Name"
     value               = "asg-capstone-jw1"
     propagate_at_launch = true
-
-  tags = {
-    name = "asg-capstone-jw1"   
   }
 }
