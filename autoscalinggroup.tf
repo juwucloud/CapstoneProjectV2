@@ -1,4 +1,4 @@
-resource "aws_autoscaling_group" "asg" {
+resource "aws_autoscaling_group" "asg-capstone-jw1" {
   default_cooldown = 30 # to avoid rapid scaling activities
 
   launch_template {
