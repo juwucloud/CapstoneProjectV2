@@ -21,6 +21,8 @@ resource "aws_route_table" "publicRT" {
 
 # Private Route Table
 
+#####!!! For Project without NAT Gateway. In Production a NAT Gateway should be used for outbound traffic (e.g. updates) !!!#####
+
 resource "aws_route_table" "privateRT" {
   vpc_id = aws_vpc.capstone_vpc.id
 

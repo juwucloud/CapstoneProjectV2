@@ -10,7 +10,7 @@ resource "aws_security_group" "ssh_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"] # In production, restrict this to trusted IPs only.
   }
 
   egress {
@@ -53,13 +53,14 @@ resource "aws_security_group" "webserver_sg" {
     security_groups = [aws_security_group.ssh_sg.id]
   }
 
-  egress {
-    description = "Allow all outbound traffic for updates, RDS access, etc."
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+### Egress Rules are left out because of missing NAT Gateway in this project.
+  # egress {
+  #   description = "Allow all outbound traffic for updates, RDS access, etc."
+  #   from_port   = 0
+  #   to_port     = 0
+  #   protocol    = "-1"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 
   tags = {
     Name = "webserver_sg"
@@ -131,11 +132,10 @@ resource "aws_security_group" "alb_sg" {
   # ALB does not need outbound traffic for Internet access, only to forward traffic to webservers
 
   egress {
-    description     = "Allows ALB to forward traffic to the webserver security group."
-    from_port       = 80
-    to_port         = 80
-    protocol        = "tcp"
-    security_groups = [aws_security_group.webserver_sg.id]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
