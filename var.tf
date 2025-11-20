@@ -23,8 +23,18 @@ variable "aws_instance_type_t3micro" {
 }
 
 # getting the latest Amazon Linux 2023
-data "aws_ssm_parameter" "al2023_latest" {
-  name = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"
+data "aws_ami" "al2023" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["al2023-ami-*-x86_64"]
+  }
+  filter {
+    name   = "state"
+    values = ["available"]
+  }
 }
 
 
