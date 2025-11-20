@@ -82,6 +82,14 @@ resource "aws_security_group" "mysql_sg" {
     security_groups          = [aws_security_group.webserver_sg.id]
   }
 
+  ingress { # only for Project demonstration purposes. In production, this should be removed.
+    description              = "Allows inbound MySQL traffic from the bastion (ssh) security group."
+    from_port                = 3306
+    to_port                  = 3306
+    protocol                 = "tcp"
+    security_groups          = [aws_security_group.ssh_sg.id]
+  }
+
   egress {
     description = "Allows all outbound traffic to any IPv4 address."
     from_port   = 0

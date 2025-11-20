@@ -19,8 +19,4 @@ resource "aws_db_instance" "wordpressdb" {
 }
 
 
-# Output the RDS endpoint
-output "rds_endpoint" {
-  value = aws_db_instance.wordpressdb.endpoint
-}
 

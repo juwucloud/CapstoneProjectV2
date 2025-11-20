@@ -5,7 +5,7 @@ resource "aws_lb" "wordpress_alb" {
   internal           = false
 
   security_groups = [
-    aws_security_group.http_sg.id
+    aws_security_group.alb_sg.id
   ]
 
   subnets = [

@@ -4,7 +4,7 @@ resource "aws_launch_template" "launch_template" {
   instance_type = var.instance_type
 
   vpc_security_group_ids = [
-    aws_security_group.http_sg.id]
+    aws_security_group.webserver_sg.id]
 
   key_name = aws_key_pair.lvl3keypair.key_name
 
