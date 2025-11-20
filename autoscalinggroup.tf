@@ -6,9 +6,9 @@ resource "aws_autoscaling_group" "asg" {
     version = "$Latest"
   }
 
-  desired_capacity = 1 # 1 for testing 2 for production
-  min_size         = 1 # 1 for testing 2 for production
-  max_size         = 2 # 2 for testing 4 for production
+  desired_capacity = 2 # 1 for testing
+  min_size         = 2 # 1 for testing
+  max_size         = 4 # 2 for testing
 
   target_group_arns   = [aws_lb_target_group.targetgroup_wordpress.arn]
 
@@ -16,6 +16,13 @@ resource "aws_autoscaling_group" "asg" {
     aws_subnet.private_subnet_1.id,
     aws_subnet.private_subnet_2.id
   ]
+
+  # Health Check Settings
+  health_check_type = "ELB"
+  health_check_grace_period = 60
+
+  # Enable force deletion of instances
+  force_delete = true
 
 
   tag {
