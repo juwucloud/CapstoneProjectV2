@@ -26,8 +26,10 @@ resource "aws_security_group" "ssh_sg" {
   }
 }
 
-#####################################################################
 
+
+
+#####################################################################
 # Webserver Security Group
 # Accepts http traffic only from the ALB-security-group
 resource "aws_security_group" "webserver_sg" {
@@ -41,6 +43,14 @@ resource "aws_security_group" "webserver_sg" {
     to_port         = 80
     protocol        = "tcp"
     security_groups = [aws_security_group.alb_sg.id]
+  }
+  
+  ingress {
+    description     = "Inbound SSH from Bastion Host security group."
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ssh_sg.id]
   }
 
   egress {
@@ -69,7 +79,7 @@ resource "aws_security_group" "mysql_sg" {
     from_port                = 3306
     to_port                  = 3306
     protocol                 = "tcp"
-    security_groups          = [aws_security_group.http_sg.id]
+    security_groups          = [aws_security_group.webserver_sg.id]
   }
 
   egress {
@@ -117,7 +127,7 @@ resource "aws_security_group" "alb_sg" {
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-    security_groups = [aws_security_group.web_sg.id]
+    security_groups = [aws_security_group.webserver_sg.id]
   }
 
   tags = {
