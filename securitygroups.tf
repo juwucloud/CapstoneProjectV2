@@ -1,56 +1,31 @@
 # SSH - Security Group
 resource "aws_security_group" "ssh_sg" {
-  name        = "SSH Security Group"
+  name        = "ssh_sg"
+  description = "Allows SSH access to EC2 instances within the VPC."
   vpc_id      = aws_vpc.capstone_vpc.id
-  description = "Allow SSH access to EC2 instances"
+
+  ingress {
+    description = "Allows inbound SSH traffic from any IPv4 address."
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    description = "Allows all outbound traffic to any IPv4 address."
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   tags = {
-    name = "ssh_security_group"
+    Name = "ssh_sg"
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "ssh_sg_inbound_rule" {
-  security_group_id = aws_security_group.ssh_sg.id
 
-  cidr_ipv4   = "0.0.0.0/0"
-  from_port   = 22
-  ip_protocol = "tcp"
-  to_port     = 22
-  description = "Allow SSH access to EC2 instances"
-}
-
-resource "aws_vpc_security_group_egress_rule" "ssh_sg_outbound_rule" {
-  security_group_id = aws_security_group.ssh_sg.id
-
-  cidr_ipv4         = "0.0.0.0/0"
-  ip_protocol       = "-1" # means "to all ports"
-}
-
-# HTTP - Security Group
-resource "aws_security_group" "http_sg" {
-  name        = "HTTP Security Group"
-  vpc_id      = aws_vpc.capstone_vpc.id
-  description = "Allow HTTP access to EC2 instances"
-  tags = {
-    name = "http_security_group"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "http_sg_inbound_rule" {
-  security_group_id = aws_security_group.http_sg.id
-
-  cidr_ipv4   = "0.0.0.0/0"
-  from_port   = 80
-  ip_protocol = "tcp"
-  to_port     = 80
-  description = "Allow HTTP access to EC2 instances"
-}
-
-resource "aws_vpc_security_group_egress_rule" "http_sg_outbound_rule" {
-  security_group_id = aws_security_group.http_sg.id
-
-  cidr_ipv4         = "0.0.0.0/0"
-  ip_protocol       = "-1" # means "to all ports"
-}
 
 
 # MYSQL - Security Group
@@ -78,3 +53,40 @@ resource "aws_vpc_security_group_egress_rule" "mysql_sg_outbound_rule" {
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "-1" # means "to all ports"
 } 
+
+
+# Application Load Balancer - Security Group
+resource "aws_security_group" "alb_sg" {
+  name        = "ALB Security Group"
+  vpc_id      = aws_vpc.capstone_vpc.id
+  description = "Allow HTTP access to Application Load Balancer"
+  tags = {
+    name = "alb_security_group"
+  }
+}
+
+# Webserver - Security Group access only from ALB
+resource "aws_security_group" "webserver_sg" {
+  name        = "webserver-sg"
+  description = "Security Group for private ASG instances"
+  vpc_id      = aws_vpc.capstone_vpc.id
+
+  # Allow only ALB to reach webservers
+  ingress {
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "webserver-sg"
+  }
+}
