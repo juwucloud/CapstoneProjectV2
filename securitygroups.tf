@@ -2,7 +2,7 @@
 # SSH - Security Group
 resource "aws_security_group" "ssh_sg" {
   name        = "ssh_sg"
-  description = "Allows SSH access to EC2 instances within the VPC."
+  description = "Allows SSH access to Bastion Host instances within the VPC."
   vpc_id      = aws_vpc.capstone_vpc.id
 
   ingress {
@@ -56,9 +56,7 @@ resource "aws_security_group" "webserver_sg" {
   }
 }
 
-
 #####################################################################
-
 
 # MYSQL - Security Group
 resource "aws_security_group" "mysql_sg" {
@@ -87,41 +85,43 @@ resource "aws_security_group" "mysql_sg" {
   }
 }
 
-
 #####################################################################
 
-# Application Load Balancer - Security Group
 resource "aws_security_group" "alb_sg" {
-  name        = "ALB Security Group"
-  vpc_id      = aws_vpc.capstone_vpc.id
-  description = "Allow HTTP access to Application Load Balancer"
-  tags = {
-    name = "alb_security_group"
-  }
-}
-
-# Webserver - Security Group access only from ALB
-resource "aws_security_group" "webserver_sg" {
-  name        = "webserver-sg"
-  description = "Security Group for private ASG instances"
+  name        = "alb_sg"
+  description = "Allows public HTTP/HTTPS traffic to the Application Load Balancer."
   vpc_id      = aws_vpc.capstone_vpc.id
 
-  # Allow only ALB to reach webservers
   ingress {
-    from_port       = 80
-    to_port         = 80
-    protocol        = "tcp"
-    security_groups = [aws_security_group.alb_sg.id]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    description = "Allows inbound HTTP from anywhere."
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  
+  # Optional HTTPS, certificate is required
+  # ingress {
+  #   description = "Allows inbound HTTPS from anywhere."
+  #   from_port   = 443
+  #   to_port     = 443
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
+
+  # ALB does not need outbound traffic for Internet access, only to forward traffic to webservers
+
+  egress {
+    description     = "Allows ALB to forward traffic to the webserver security group."
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [aws_security_group.web_sg.id]
+  }
+
   tags = {
-    Name = "webserver-sg"
+    Name = "alb_sg"
   }
 }
+
