@@ -6,12 +6,12 @@ output "vpc_id" {
 
 # Output Bastion Host Public IP
 output "bastion_public_ip" {
-  value = aws_instance.bastion-host.public_ip
+  value = aws_instance.bastionhost.public_ip
 }
 
 # Output ALB DNS Name
 output "alb_dns_name" {
-  value = aws_lb.application_load_balancer.dns_name
+  value = aws_lb.wordpress_alb.dns_name
 }
 
 # Output RDS Endpoint
