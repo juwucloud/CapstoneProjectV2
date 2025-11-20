@@ -1,5 +1,5 @@
 #! /bin/bash
-sudo yum update -y
+sudo dnf update -y
 
 # installing mysql cli
-sudo yum install -y mysql
+sudo dnf install -y mysql
