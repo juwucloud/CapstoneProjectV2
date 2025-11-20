@@ -12,7 +12,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_high" {
   alarm_description   = "Scale out if CPU > 50% for 3 minutes"
 
   dimensions = {
-    AutoScalingGroupName = aws_autoscaling_group.asg.name
+    AutoScalingGroupName = aws_autoscaling_group.asg-capstone-jw1.name
   }
 
   alarm_actions = [
@@ -34,7 +34,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_low" {
   alarm_description   = "Scale in if CPU < 20% for 3 minutes"
 
   dimensions = {
-    AutoScalingGroupName = aws_autoscaling_group.asg.name
+    AutoScalingGroupName = aws_autoscaling_group.asg-capstone-jw1.name
   }
 
   alarm_actions = [
