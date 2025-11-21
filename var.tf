@@ -38,12 +38,13 @@ data "aws_ami" "al2023" {
 }
 
 
-variable "wordpress_ami_id" {
-    type = string
-    description = "AMI for WordPress"
-    default = "ami-0bd84fb21f977f20a"
-  
-}
+
+### only safe in personal account
+# variable "wordpress_ami_id" {
+#     type = string
+#     description = "AMI for WordPress"
+#     default = "ami-0bd84fb21f977f20a"
+# }
 
 variable "instance_type" {
     type = string

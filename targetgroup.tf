@@ -10,7 +10,7 @@ resource "aws_lb_target_group" "targetgroup_wordpress" {
   health_check {
     enabled             = true
     interval            = 30
-    path                = "/"
+    path                = "/var/www/html"
     port                = "80"
     protocol            = "HTTP"
     timeout             = 5

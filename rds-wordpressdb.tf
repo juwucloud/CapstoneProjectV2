@@ -17,10 +17,7 @@ resource "aws_db_instance" "wordpressdb" {
 
 
   db_subnet_group_name = aws_db_subnet_group.rds_subnets.name
-  multi_az             = true
+  multi_az             = false
   skip_final_snapshot  = true
   vpc_security_group_ids = [aws_security_group.mysql_sg.id]
 }
-
-
-
